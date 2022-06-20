@@ -1,0 +1,421 @@
+fileFormatVersion: 2
+guid: de673f9a56a72544f9319fc5a81d0c28
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Elbow_Joint
+    100002: Elbow_Joint 1
+    100004: Foot
+    100006: Foot 1
+    100008: Forearm
+    100010: Forearm 1
+    100012: Hand
+    100014: Hand 1
+    100016: Head
+    100018: Index_Finger_1
+    100020: Index_Finger_1 1
+    100022: Index_Finger_2
+    100024: Index_Finger_2 1
+    100026: Index_Finger_3
+    100028: Index_Finger_3 1
+    100030: Left_Arm
+    100032: Left_Leg
+    100034: Lower_Leg
+    100036: Lower_Leg 1
+    100038: Midbody
+    100040: Middle_Finger_1
+    100042: Middle_Finger_1 1
+    100044: Middle_Finger_2
+    100046: Middle_Finger_2 1
+    100048: Middle_Finger_3
+    100050: Middle_Finger_3 1
+    100052: Neck_1
+    100054: Neck_2
+    100056: Neck_3
+    100058: Neck_4
+    100060: Pelvis
+    100062: Pinky_Finger_1
+    100064: Pinky_Finger_1 1
+    100066: Pinky_Finger_2
+    100068: Pinky_Finger_2 1
+    100070: Pinky_Finger_3
+    100072: Pinky_Finger_3 1
+    100074: Right_Arm
+    100076: Right_Leg
+    100078: Ring_Finger_1
+    100080: Ring_Finger_1 1
+    100082: Ring_Finger_2
+    100084: Ring_Finger_2 1
+    100086: Ring_Finger_3
+    100088: Ring_Finger_3 1
+    100090: //RootNode
+    100092: Robot_1
+    100094: Spine_1
+    100096: Spine_2
+    100098: Spine_3
+    100100: Spine_4
+    100102: Spine_5
+    100104: Thumb_1
+    100106: Thumb_1 1
+    100108: Thumb_2
+    100110: Thumb_2 1
+    100112: Thumb_3
+    100114: Thumb_3 1
+    100116: Thumb_4
+    100118: Thumb_4 1
+    100120: Upper_Arm
+    100122: Upper_Arm 1
+    100124: Upper_Body
+    100126: Wrist_Joint
+    100128: Wrist_Joint 1
+    400000: Elbow_Joint
+    400002: Elbow_Joint 1
+    400004: Foot
+    400006: Foot 1
+    400008: Forearm
+    400010: Forearm 1
+    400012: Hand
+    400014: Hand 1
+    400016: Head
+    400018: Index_Finger_1
+    400020: Index_Finger_1 1
+    400022: Index_Finger_2
+    400024: Index_Finger_2 1
+    400026: Index_Finger_3
+    400028: Index_Finger_3 1
+    400030: Left_Arm
+    400032: Left_Leg
+    400034: Lower_Leg
+    400036: Lower_Leg 1
+    400038: Midbody
+    400040: Middle_Finger_1
+    400042: Middle_Finger_1 1
+    400044: Middle_Finger_2
+    400046: Middle_Finger_2 1
+    400048: Middle_Finger_3
+    400050: Middle_Finger_3 1
+    400052: Neck_1
+    400054: Neck_2
+    400056: Neck_3
+    400058: Neck_4
+    400060: Pelvis
+    400062: Pinky_Finger_1
+    400064: Pinky_Finger_1 1
+    400066: Pinky_Finger_2
+    400068: Pinky_Finger_2 1
+    400070: Pinky_Finger_3
+    400072: Pinky_Finger_3 1
+    400074: Right_Arm
+    400076: Right_Leg
+    400078: Ring_Finger_1
+    400080: Ring_Finger_1 1
+    400082: Ring_Finger_2
+    400084: Ring_Finger_2 1
+    400086: Ring_Finger_3
+    400088: Ring_Finger_3 1
+    400090: //RootNode
+    400092: Robot_1
+    400094: Spine_1
+    400096: Spine_2
+    400098: Spine_3
+    400100: Spine_4
+    400102: Spine_5
+    400104: Thumb_1
+    400106: Thumb_1 1
+    400108: Thumb_2
+    400110: Thumb_2 1
+    400112: Thumb_3
+    400114: Thumb_3 1
+    400116: Thumb_4
+    400118: Thumb_4 1
+    400120: Upper_Arm
+    400122: Upper_Arm 1
+    400124: Upper_Body
+    400126: Wrist_Joint
+    400128: Wrist_Joint 1
+    2300000: Elbow_Joint
+    2300002: Elbow_Joint 1
+    2300004: Foot
+    2300006: Foot 1
+    2300008: Forearm
+    2300010: Forearm 1
+    2300012: Hand
+    2300014: Hand 1
+    2300016: Head
+    2300018: Index_Finger_1
+    2300020: Index_Finger_1 1
+    2300022: Index_Finger_2
+    2300024: Index_Finger_2 1
+    2300026: Index_Finger_3
+    2300028: Index_Finger_3 1
+    2300030: Left_Arm
+    2300032: Left_Leg
+    2300034: Lower_Leg
+    2300036: Lower_Leg 1
+    2300038: Midbody
+    2300040: Middle_Finger_1
+    2300042: Middle_Finger_1 1
+    2300044: Middle_Finger_2
+    2300046: Middle_Finger_2 1
+    2300048: Middle_Finger_3
+    2300050: Middle_Finger_3 1
+    2300052: Neck_1
+    2300054: Neck_2
+    2300056: Neck_3
+    2300058: Neck_4
+    2300060: Pelvis
+    2300062: Pinky_Finger_1
+    2300064: Pinky_Finger_1 1
+    2300066: Pinky_Finger_2
+    2300068: Pinky_Finger_2 1
+    2300070: Pinky_Finger_3
+    2300072: Pinky_Finger_3 1
+    2300074: Right_Arm
+    2300076: Right_Leg
+    2300078: Ring_Finger_1
+    2300080: Ring_Finger_1 1
+    2300082: Ring_Finger_2
+    2300084: Ring_Finger_2 1
+    2300086: Ring_Finger_3
+    2300088: Ring_Finger_3 1
+    2300090: Spine_1
+    2300092: Spine_2
+    2300094: Spine_3
+    2300096: Spine_4
+    2300098: Spine_5
+    2300100: Thumb_1
+    2300102: Thumb_1 1
+    2300104: Thumb_2
+    2300106: Thumb_2 1
+    2300108: Thumb_3
+    2300110: Thumb_3 1
+    2300112: Thumb_4
+    2300114: Thumb_4 1
+    2300116: Upper_Arm
+    2300118: Upper_Arm 1
+    2300120: Upper_Body
+    2300122: Wrist_Joint
+    2300124: Wrist_Joint 1
+    3300000: Elbow_Joint
+    3300002: Elbow_Joint 1
+    3300004: Foot
+    3300006: Foot 1
+    3300008: Forearm
+    3300010: Forearm 1
+    3300012: Hand
+    3300014: Hand 1
+    3300016: Head
+    3300018: Index_Finger_1
+    3300020: Index_Finger_1 1
+    3300022: Index_Finger_2
+    3300024: Index_Finger_2 1
+    3300026: Index_Finger_3
+    3300028: Index_Finger_3 1
+    3300030: Left_Arm
+    3300032: Left_Leg
+    3300034: Lower_Leg
+    3300036: Lower_Leg 1
+    3300038: Midbody
+    3300040: Middle_Finger_1
+    3300042: Middle_Finger_1 1
+    3300044: Middle_Finger_2
+    3300046: Middle_Finger_2 1
+    3300048: Middle_Finger_3
+    3300050: Middle_Finger_3 1
+    3300052: Neck_1
+    3300054: Neck_2
+    3300056: Neck_3
+    3300058: Neck_4
+    3300060: Pelvis
+    3300062: Pinky_Finger_1
+    3300064: Pinky_Finger_1 1
+    3300066: Pinky_Finger_2
+    3300068: Pinky_Finger_2 1
+    3300070: Pinky_Finger_3
+    3300072: Pinky_Finger_3 1
+    3300074: Right_Arm
+    3300076: Right_Leg
+    3300078: Ring_Finger_1
+    3300080: Ring_Finger_1 1
+    3300082: Ring_Finger_2
+    3300084: Ring_Finger_2 1
+    3300086: Ring_Finger_3
+    3300088: Ring_Finger_3 1
+    3300090: Spine_1
+    3300092: Spine_2
+    3300094: Spine_3
+    3300096: Spine_4
+    3300098: Spine_5
+    3300100: Thumb_1
+    3300102: Thumb_1 1
+    3300104: Thumb_2
+    3300106: Thumb_2 1
+    3300108: Thumb_3
+    3300110: Thumb_3 1
+    3300112: Thumb_4
+    3300114: Thumb_4 1
+    3300116: Upper_Arm
+    3300118: Upper_Arm 1
+    3300120: Upper_Body
+    3300122: Wrist_Joint
+    3300124: Wrist_Joint 1
+    4300000: Pelvis
+    4300002: Midbody
+    4300004: Spine_1
+    4300006: Spine_2
+    4300008: Spine_3
+    4300010: Spine_4
+    4300012: Spine_5
+    4300014: Upper_Body
+    4300016: Neck_1
+    4300018: Neck_2
+    4300020: Neck_3
+    4300022: Neck_4
+    4300024: Head
+    4300026: Left_Arm
+    4300028: Upper_Arm
+    4300030: Elbow_Joint
+    4300032: Forearm
+    4300034: Wrist_Joint
+    4300036: Hand
+    4300038: Pinky_Finger_1
+    4300040: Pinky_Finger_2
+    4300042: Pinky_Finger_3
+    4300044: Ring_Finger_1
+    4300046: Ring_Finger_2
+    4300048: Ring_Finger_3
+    4300050: Middle_Finger_1
+    4300052: Middle_Finger_2
+    4300054: Middle_Finger_3
+    4300056: Index_Finger_1
+    4300058: Index_Finger_2
+    4300060: Index_Finger_3
+    4300062: Thumb_1
+    4300064: Thumb_2
+    4300066: Thumb_3
+    4300068: Thumb_4
+    4300070: Right_Arm
+    4300072: Upper_Arm
+    4300074: Elbow_Joint
+    4300076: Forearm
+    4300078: Wrist_Joint
+    4300080: Hand
+    4300082: Pinky_Finger_1
+    4300084: Pinky_Finger_2
+    4300086: Pinky_Finger_3
+    4300088: Ring_Finger_1
+    4300090: Ring_Finger_2
+    4300092: Ring_Finger_3
+    4300094: Middle_Finger_1
+    4300096: Middle_Finger_2
+    4300098: Middle_Finger_3
+    4300100: Index_Finger_1
+    4300102: Index_Finger_2
+    4300104: Index_Finger_3
+    4300106: Thumb_1
+    4300108: Thumb_2
+    4300110: Thumb_3
+    4300112: Thumb_4
+    4300114: Left_Leg
+    4300116: Lower_Leg
+    4300118: Foot
+    4300120: Right_Leg
+    4300122: Lower_Leg
+    4300124: Foot
+    9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Robot_1_A_Mat
+    second: {fileID: 2100000, guid: 2dc3d3b0e8a34e2469c15bdc22687a75, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Robot_1_B_Mat
+    second: {fileID: 2100000, guid: b97e340d6aef50040b79022e2512e7e5, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
