@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mono.Cecil;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -15,6 +16,10 @@ public class RobotAI : MonoBehaviour
     [SerializeField] private GameObject _waypointsParentGO;
     [SerializeField] private Transform[] _waypoints;
     [SerializeField] private int _numOfWaypoints;
+    [Space] [Space]
+    [SerializeField] private GameObject _coverWaypointsParentGO;
+    [SerializeField] private Transform[] _coverWaypoints;
+    [SerializeField] private int _numOfCoverWaypoints;
     [SerializeField] private bool _reachedEnd = false;
     [SerializeField] private bool _waitToRun = false;
     [SerializeField] private CoverStatus _coverStatus;
@@ -27,7 +32,8 @@ public class RobotAI : MonoBehaviour
     void Start()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
-        _waypointsParentGO = GameObject.Find("Waypoints");
+        LoadWaypointArrays(ref _waypointsParentGO, "Waypoints", ref _waypoints, ref _numOfWaypoints);
+        LoadWaypointArrays(ref _coverWaypointsParentGO, "CoverWaypoints", ref _coverWaypoints, ref _numOfCoverWaypoints);
         _coverStatus = CoverStatus.None;
         
         _animator = GetComponent<Animator>();
@@ -36,17 +42,6 @@ public class RobotAI : MonoBehaviour
         _animDeath = false;
         _animHiding = false;
         _animSpeed = 0f;
-
-        if (_waypointsParentGO == null) { Debug.LogError("RobotAI|Start() _waypointsParentGO is NULL!"); }
-        else
-        {
-            _numOfWaypoints = _waypointsParentGO.GetComponentInChildren<Transform>().childCount;
-            _waypoints = new Transform[_numOfWaypoints];
-            
-            int i = 0;
-            foreach (Transform wp in _waypointsParentGO.GetComponentInChildren<Transform>())
-            { _waypoints[i] = wp; i++; }
-        }
         
         _waypointEndPosition = _waypoints[_numOfWaypoints - 1].position;
 
@@ -59,18 +54,40 @@ public class RobotAI : MonoBehaviour
         SetAnimationState("WalkToRun");
 
         //Testing --------------------------------
-        StartCoroutine(TestingCoroutine());
+        //StartCoroutine(TestingCoroutine());
+        StartCoroutine(TestingHitDetected());
         //----------------------------------------
     }
+    
     private IEnumerator TestingCoroutine()
     {
         yield return new WaitForSeconds(8f);
         SetCoverStatus(CoverStatus.RunningTo);
     }
-    
+
+    private IEnumerator TestingHitDetected()
+    {
+        yield return new WaitForSeconds(5f);
+        RunToCover();
+        yield return new WaitForSeconds(3f);
+        RunToCover();
+        yield return new WaitForSeconds(7f);
+        RunToCover();
+        yield return new WaitForSeconds(9f);
+        RunToCover();
+        yield return new WaitForSeconds(15f);
+        RunToCover();
+        yield return new WaitForSeconds(19f);
+        RunToCover();
+        yield return new WaitForSeconds(15f);
+        RunToCover();
+        yield return new WaitForSeconds(11f);
+        RunToCover();
+    }
+
     void Update()
     {
-        DetectHitOrNearMiss();
+        // DetectHitOrNearMiss();
         
         if (!_navMeshAgent.isStopped)
         { Move(); }
@@ -184,36 +201,45 @@ public class RobotAI : MonoBehaviour
 
     private Vector3 GetNearestCoverWaypoint()
     {
-        return new Vector3(0f, 0f, 4f); //Temp to avoid error, remove later
+        float shortestDistance = 1000f;
+        int closestCoverWPID = 0;
+        Transform closestCoverWP;
+        
+        for (int i = 0; i < _numOfCoverWaypoints; i++)
+        {
+            float tempDistance = Vector3.Distance(_coverWaypoints[i].position, transform.position);
+            if (tempDistance < shortestDistance)
+            {
+                shortestDistance = tempDistance;
+                closestCoverWPID = i;
+            }
+        }
+
+        closestCoverWP = _coverWaypoints[closestCoverWPID];
+        return closestCoverWP.position;
     }
     
-    private void DetectHitOrNearMiss()
+    private void RunToCover()
     {
-        //Detect hit or near miss
-        
-        //if hit or near miss
-        
-        // switch (_coverStatus)
-        // {
-        //     case CoverStatus.None:
-        //         //Move to nearest cover
-        //         _coverStatus = CoverStatus.RunningTo;
-        //         break;
-        //     case CoverStatus.RunningTo:
-        //         //Do nothing, in progress
-        //         
-        //         break;
-        //     case CoverStatus.AtCover:
-        //         //Reset coroutine WaitToRun
-        //         WaitToRun();
-        //         break;
-        // }
+        switch (_coverStatus)
+        {
+            case CoverStatus.None:  //Already running
+                //Move to nearest cover
+                SetCoverStatus(CoverStatus.RunningTo);
+                break;
+            case CoverStatus.RunningTo: //Already running to cover
+                //Do nothing, in progress
+                break;
+            case CoverStatus.AtCover: //Already at cover
+                //Reset coroutine WaitToRun
+                WaitToRun();
+                break;
+        }
     }
-
+    
     private IEnumerator WaitToRun()
     {
         yield return new WaitForSeconds(3f);
-        //Start running towards endpoint
         _currDestination = _waypointEndPosition;
         _navMeshAgent.destination = _currDestination;
         SetCoverStatus(CoverStatus.None);
@@ -244,6 +270,22 @@ public class RobotAI : MonoBehaviour
         _navMeshAgent.isStopped = false;
     }
 
+    private void LoadWaypointArrays(ref GameObject parentGO, string parentGOName, ref Transform[] waypointsArray, ref int numOfWaypoints)
+    {
+        parentGO = GameObject.Find(parentGOName);
+        
+        if (parentGO == null) {Debug.LogError("RobotAI|LoadWaypointArrays() "+ parentGOName + " is NULL!");}
+        else
+        {
+            numOfWaypoints = parentGO.GetComponentInChildren<Transform>().childCount;
+            waypointsArray = new Transform[numOfWaypoints];
+
+            int i = 0;
+            foreach (Transform wp in parentGO.GetComponentInChildren<Transform>())
+            { waypointsArray[i] = wp; i++; }
+        }
+    }
+    
     private void OnDeath()
     {
         _animator.SetTrigger("Death");
