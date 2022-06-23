@@ -6,7 +6,6 @@ using Mono.Cecil;
 using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
 
