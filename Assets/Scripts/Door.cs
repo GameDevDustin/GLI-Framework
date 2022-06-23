@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+    [SerializeField] private bool _reversedOpening;
     [SerializeField] int _robotsInTriggerZone = 0;
     private bool _openDoor;
     private bool _closeDoor;
@@ -43,13 +44,22 @@ public class Door : MonoBehaviour
 
     private void OpenDoor()
     {
-        if (transform.localPosition.z < 2) { transform.Translate(0, 0, 1 * _doorSpeed * Time.deltaTime, Space.World); } 
-        else if (transform.position.z > 1.99) { _fullyOpen = true; _openDoor = false; }
+        int reversed = 1;
+        if (_reversedOpening) { reversed = -1; }
+        
+        if (transform.localPosition.z < 2) 
+        { transform.Translate(0, 0, reversed * _doorSpeed * Time.deltaTime, Space.World); }
+        else if (transform.localPosition.z > 1.99) 
+        { _fullyOpen = true; _openDoor = false; }
     }
 
     private void CloseDoor()
     {
-        if (transform.localPosition.z > 0f) { transform.Translate(0,0,-1 * _doorSpeed * Time.deltaTime, Space.World); }
+        int reversed = -1;
+        if (_reversedOpening) { reversed = 1; }
+        
+        if (transform.localPosition.z > 0f)
+        { transform.Translate(0,0,reversed * _doorSpeed * Time.deltaTime, Space.World); }
         else { _fullyOpen = false; }
     }
 }
