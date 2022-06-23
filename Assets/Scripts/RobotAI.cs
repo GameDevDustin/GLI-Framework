@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = Unity.Mathematics.Random;
 
 public class RobotAI : MonoBehaviour
 {
@@ -74,7 +75,7 @@ public class RobotAI : MonoBehaviour
         yield return new WaitForSeconds(5f);
         TestingDebugLogHit();
         RunToCover();
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(1f);
         TestingDebugLogHit();
         RunToCover();
         yield return new WaitForSeconds(7f);
@@ -290,7 +291,8 @@ public class RobotAI : MonoBehaviour
     
     private IEnumerator WaitToRun()
     {
-        yield return new WaitForSeconds(3f);
+        float waitTime = UnityEngine.Random.Range(3f, 7f);   
+        yield return new WaitForSeconds(waitTime);
         _currDestination = _waypointEndPosition;
         _navMeshAgent.destination = _currDestination;
         SetCoverStatus(CoverStatus.None);
