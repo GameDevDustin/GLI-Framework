@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Mono.Cecil;
+using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -16,18 +19,19 @@ public class RobotAI : MonoBehaviour
     [SerializeField] private GameObject _waypointsParentGO;
     [SerializeField] private Transform[] _waypoints;
     [SerializeField] private int _numOfWaypoints;
+    [SerializeField] private bool _reachedEnd = false;
     [Space] [Space]
     [SerializeField] private GameObject _coverWaypointsParentGO;
     [SerializeField] private Transform[] _coverWaypoints;
     [SerializeField] private int _numOfCoverWaypoints;
-    [SerializeField] private bool _reachedEnd = false;
+    [SerializeField] private bool _coverCooldown;
     [SerializeField] private bool _waitToRun = false;
     [SerializeField] private CoverStatus _coverStatus;
     [SerializeField] private Animator _animator;
     [SerializeField] private float _animSpeed;
     [SerializeField] private bool _animDeath;
     [SerializeField] private bool _animHiding;
-
+    
 
     void Start()
     {
@@ -55,10 +59,11 @@ public class RobotAI : MonoBehaviour
 
         //Testing --------------------------------
         //StartCoroutine(TestingCoroutine());
-        StartCoroutine(TestingHitDetected());
+        //StartCoroutine(TestingHitDetected());
         //----------------------------------------
     }
     
+    //TESTING COROUTINES AND METHODS ------------------------
     private IEnumerator TestingCoroutine()
     {
         yield return new WaitForSeconds(8f);
@@ -68,23 +73,37 @@ public class RobotAI : MonoBehaviour
     private IEnumerator TestingHitDetected()
     {
         yield return new WaitForSeconds(5f);
+        TestingDebugLogHit();
         RunToCover();
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(4f);
+        TestingDebugLogHit();
         RunToCover();
         yield return new WaitForSeconds(7f);
+        TestingDebugLogHit();
         RunToCover();
         yield return new WaitForSeconds(9f);
+        TestingDebugLogHit();
         RunToCover();
         yield return new WaitForSeconds(15f);
+        TestingDebugLogHit();
         RunToCover();
         yield return new WaitForSeconds(19f);
+        TestingDebugLogHit();
         RunToCover();
         yield return new WaitForSeconds(15f);
+        TestingDebugLogHit();
         RunToCover();
         yield return new WaitForSeconds(11f);
+        TestingDebugLogHit();
         RunToCover();
     }
 
+    private void TestingDebugLogHit()
+    {
+        Debug.Log("Hit detected!");
+    }
+    //--------------------------------------------------------
+    
     void Update()
     {
         // DetectHitOrNearMiss();
@@ -126,7 +145,7 @@ public class RobotAI : MonoBehaviour
                     case CoverStatus.AtCover:
                             //Was idling at cover
                             SetAnimationState("WalkToRun");
-                        break;
+                            break;
                     case CoverStatus.RunningTo:
                             //Was running to cover, resume running to end point
                             _currDestination = _waypointEndPosition;
@@ -138,8 +157,11 @@ public class RobotAI : MonoBehaviour
                 {
                     case CoverStatus.None:
                         //Was running to end point, now running to nearest cover
-                        _currDestination = GetNearestCoverWaypoint();
-                        _navMeshAgent.destination = _currDestination;
+                        if (!_coverCooldown)
+                        {
+                            _currDestination = GetNearestCoverWaypoint();
+                            _navMeshAgent.destination = _currDestination; 
+                        }
                         break;
                     case CoverStatus.AtCover:
                         //Already at cover, do nothing
@@ -162,6 +184,7 @@ public class RobotAI : MonoBehaviour
                         //Was running to cover, now at cover
                         SetAnimationState("CoverIdle");
                         StartCoroutine(WaitToRun());
+                        StartCoroutine(StartCoverCooldown());
                         break;
                 }
                 break;
@@ -195,8 +218,15 @@ public class RobotAI : MonoBehaviour
     private IEnumerator WalkToRun()
     {
         _animator.SetFloat("Speed", 2f);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f);
         _animator.SetFloat("Speed", 5f);
+    }
+
+    private IEnumerator StartCoverCooldown()
+    {
+        _coverCooldown = true;
+        yield return new WaitForSeconds(3f);
+        _coverCooldown = false;
     }
 
     private Vector3 GetNearestCoverWaypoint()
@@ -216,9 +246,31 @@ public class RobotAI : MonoBehaviour
         }
 
         closestCoverWP = _coverWaypoints[closestCoverWPID];
+        
+        //Determine if closest waypoint is behind AI
+        //1st floor - if waypoint.x > transform.x      cover waypoints 1 - 4 (0 to 3)
+        //2nd floor - if waypoint.x < transform.x      5 - 9                 (4 to 8)
+        //3rd floor - same as 1st                      remaining             ( > 8)
+
+        bool nextWaypointIsPositiveX = !(closestCoverWPID > 3 && closestCoverWPID < 9);
+
+        if (closestCoverWPID + 1 < _numOfCoverWaypoints)
+        {
+            if (nextWaypointIsPositiveX == true)
+            {
+                //Debug.Log("nextWPisPositiveX = true");
+                if (closestCoverWP.position.x > transform.position.x) { closestCoverWP = _coverWaypoints[closestCoverWPID + 1]; }
+            }
+            else
+            {
+                //Debug.Log("nextWPisPositiveX = false");
+                if (closestCoverWP.position.x < transform.position.x) { closestCoverWP = _coverWaypoints[closestCoverWPID + 1]; }
+            }
+        }
+        
         return closestCoverWP.position;
     }
-    
+
     private void RunToCover()
     {
         switch (_coverStatus)
