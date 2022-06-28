@@ -10,6 +10,9 @@ using Random = Unity.Mathematics.Random;
 public class RobotAI : MonoBehaviour
 {
     enum CoverStatus {None, RunningTo, AtCover }
+
+    [SerializeField] private float _aiHealth;
+    private float _defaultHealth;
     private Vector3 _currDestination;
     private NavMeshAgent _navMeshAgent;
     [SerializeField] private Vector3 _waypointEndPosition;
@@ -38,29 +41,42 @@ public class RobotAI : MonoBehaviour
             SetAnimationState("WalkToRun");
         }
     }
-    
-   private void Start()
+
+    private void Start()
     {
+        if (_aiHealth < 1) { _aiHealth = 100; Debug.Log("Player:Start() _aiHealth is < 1! Set to 100."); }
+        _defaultHealth = _aiHealth;
+        
         _navMeshAgent = GetComponent<NavMeshAgent>();
         LoadWaypointArrays(ref _waypointsParentGO, "Waypoints", ref _waypoints, ref _numOfWaypoints);
-        LoadWaypointArrays(ref _coverWaypointsParentGO, "CoverWaypoints", ref _coverWaypoints, ref _numOfCoverWaypoints);
+        LoadWaypointArrays(ref _coverWaypointsParentGO, "CoverWaypoints", ref _coverWaypoints,
+            ref _numOfCoverWaypoints);
         _coverStatus = CoverStatus.None;
-        
+
         _animator = GetComponent<Animator>();
-        if (_animator == null) { Debug.LogError("RobotAI|Start() _animator is NULL!"); }
-        
+        if (_animator == null)
+        {
+            Debug.LogError("RobotAI|Start() _animator is NULL!");
+        }
+
         _animDeath = false;
         _animHiding = false;
         _animSpeed = 0f;
-        
+
         _waypointEndPosition = _waypoints[_numOfWaypoints - 1].position;
 
         //AI will move to end destination unless interrupted
-        if (_waypointEndPosition == null) {Debug.LogError("RobotAI|Start() _waypointEndPosition is NULL!");}
-        else { _currDestination = _waypointEndPosition; }
+        if (_waypointEndPosition == null)
+        {
+            Debug.LogError("RobotAI|Start() _waypointEndPosition is NULL!");
+        }
+        else
+        {
+            _currDestination = _waypointEndPosition;
+        }
 
         _navMeshAgent.destination = _currDestination;
-        
+
         SetAnimationState("WalkToRun");
 
         //Testing --------------------------------
@@ -68,7 +84,7 @@ public class RobotAI : MonoBehaviour
         //StartCoroutine(TestingHitDetected());
         //----------------------------------------
     }
-    
+
     //TESTING COROUTINES AND METHODS ------------------------
     private IEnumerator TestingCoroutine()
     {
@@ -304,29 +320,6 @@ public class RobotAI : MonoBehaviour
         SetCoverStatus(CoverStatus.None);
     }
     
-    public void ReachedEnd()
-    {
-        _navMeshAgent.isStopped = true;
-        ResetValues();
-    }
-
-    public void ResetValues()
-    {
-        //called from spawn manager before repositioning at start waypoint
-        _coverStatus = CoverStatus.None;
-        _currDestination = _waypointEndPosition;
-        // _reachedEnd = false;
-        _waitToRun = false;
-        _animDeath = false;
-        _animHiding = false;
-        _animSpeed = 0f;
-        _animator.ResetTrigger("Death");
-        _animator.SetFloat("Speed", 0f);
-        _animator.SetBool("Hiding", false);
-        transform.SetPositionAndRotation(_waypoints[0].position, quaternion.Euler(0f, -90f, 0f));
-        this.GameObject().SetActive(false);
-    }
-
     private void LoadWaypointArrays(ref GameObject parentGO, string parentGOName, ref Transform[] waypointsArray, ref int numOfWaypoints)
     {
         parentGO = GameObject.Find(parentGOName);
@@ -343,8 +336,41 @@ public class RobotAI : MonoBehaviour
         }
     }
     
-    private void OnDeath()
+    public void ReachedEnd()
     {
+        ResetValues();
+    }
+
+    public void ResetValues()
+    {
+        _navMeshAgent.isStopped = true;
+        _aiHealth = _defaultHealth;
+        _coverStatus = CoverStatus.None;
+        _currDestination = _waypointEndPosition;
+        _waitToRun = false;
+        _animDeath = false;
+        _animHiding = false;
+        _animSpeed = 0f;
+        _animator.ResetTrigger("Death");
+        _animator.SetFloat("Speed", 0f);
+        _animator.SetBool("Hiding", false);
+        transform.SetPositionAndRotation(_waypoints[0].position, quaternion.Euler(0f, -90f, 0f));
+        this.GameObject().SetActive(false);
+    }
+
+    public void TakeDamage(float damageAmount) {
+        _aiHealth -= damageAmount;
+        if (_aiHealth <= 0)
+            { OnDeath(); }
+    }
+
+    private void OnDeath() {
         _animator.SetTrigger("Death");
+        StartCoroutine(waitForDeathAnimation());
+    }
+
+    IEnumerator waitForDeathAnimation() {
+        yield return new WaitForSeconds(3.3f);
+        ResetValues(); 
     }
 }

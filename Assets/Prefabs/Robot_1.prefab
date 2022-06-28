@@ -237,14 +237,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa672343745e8fc4e9eb4ca4234d6762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _aiHealth: 100
   _waypointEndPosition: {x: 0, y: 0, z: 0}
   _waypointsParentGO: {fileID: 0}
-  _waypoints: []
   _numOfWaypoints: 0
-  _reachedEnd: 0
+  _waypoints: []
   _coverWaypointsParentGO: {fileID: 0}
-  _coverWaypoints: []
   _numOfCoverWaypoints: 0
+  _coverWaypoints: []
   _coverCooldown: 0
   _waitToRun: 0
   _coverStatus: 0
