@@ -56390,6 +56390,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1706128579}
   - component: {fileID: 1706128578}
+  - component: {fileID: 1706128580}
   m_Layer: 0
   m_Name: Spawn_Manager
   m_TagString: Untagged
@@ -56415,11 +56416,14 @@ MonoBehaviour:
   _prefabGO: {fileID: 5863723495548176970, guid: 6899ab9bac4841f4d8a1244bfb780ad3,
     type: 3}
   _amountOfGOsInPool: 75
+  _numOfRemaingGOsInPool: 0
   _nextPooledGO_ID: 0
   _numOfWaves: 5
   _currWave: 0
   _currWaveStartTime: 0
   _currTime: 0
+  _maxSpawnsPerWave: 0
+  _minSpawnsPerWave: 0
   _amountForWave: 
   _waveLengths: []
   _spawnedPoolGOs: []
@@ -56431,13 +56435,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1706128577}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -40.29, y: 14.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1706128580
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706128577}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.972437, y: 1, z: 8.194515}
+  m_Center: {x: 4.9862185, y: 0, z: 1.2443666}
 --- !u!4 &1709233835 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 54d251628e7924e3c8b42a06f1533e55,

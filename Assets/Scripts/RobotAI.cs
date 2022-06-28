@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = Unity.Mathematics.Random;
@@ -12,13 +14,12 @@ public class RobotAI : MonoBehaviour
     private NavMeshAgent _navMeshAgent;
     [SerializeField] private Vector3 _waypointEndPosition;
     [SerializeField] private GameObject _waypointsParentGO;
-    [SerializeField] private Transform[] _waypoints;
     [SerializeField] private int _numOfWaypoints;
-    [SerializeField] private bool _reachedEnd = false;
+    [SerializeField] private Transform[] _waypoints;
     [Space] [Space]
     [SerializeField] private GameObject _coverWaypointsParentGO;
-    [SerializeField] private Transform[] _coverWaypoints;
     [SerializeField] private int _numOfCoverWaypoints;
+    [SerializeField] private Transform[] _coverWaypoints;
     [SerializeField] private bool _coverCooldown;
     [SerializeField] private bool _waitToRun = false;
     [SerializeField] private CoverStatus _coverStatus;
@@ -26,9 +27,19 @@ public class RobotAI : MonoBehaviour
     [SerializeField] private float _animSpeed;
     [SerializeField] private bool _animDeath;
     [SerializeField] private bool _animHiding;
-    
 
-    void Start()
+
+    private void OnEnable()
+    {
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.isStopped = false;
+            _navMeshAgent.destination = _currDestination;
+            SetAnimationState("WalkToRun");
+        }
+    }
+    
+   private void Start()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         LoadWaypointArrays(ref _waypointsParentGO, "Waypoints", ref _waypoints, ref _numOfWaypoints);
@@ -293,12 +304,10 @@ public class RobotAI : MonoBehaviour
         SetCoverStatus(CoverStatus.None);
     }
     
-    private void ReachedEnd()
+    public void ReachedEnd()
     {
-        //Tell spawn manager or use collider on spawn manager to detect by GO tag?
-        //ResetValues();
-        _reachedEnd = true;
         _navMeshAgent.isStopped = true;
+        ResetValues();
     }
 
     public void ResetValues()
@@ -306,7 +315,7 @@ public class RobotAI : MonoBehaviour
         //called from spawn manager before repositioning at start waypoint
         _coverStatus = CoverStatus.None;
         _currDestination = _waypointEndPosition;
-        _reachedEnd = false;
+        // _reachedEnd = false;
         _waitToRun = false;
         _animDeath = false;
         _animHiding = false;
@@ -314,8 +323,8 @@ public class RobotAI : MonoBehaviour
         _animator.ResetTrigger("Death");
         _animator.SetFloat("Speed", 0f);
         _animator.SetBool("Hiding", false);
-        SetAnimationState("WalkToRun");
-        _navMeshAgent.isStopped = false;
+        transform.SetPositionAndRotation(_waypoints[0].position, quaternion.Euler(0f, -90f, 0f));
+        this.GameObject().SetActive(false);
     }
 
     private void LoadWaypointArrays(ref GameObject parentGO, string parentGOName, ref Transform[] waypointsArray, ref int numOfWaypoints)

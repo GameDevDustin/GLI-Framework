@@ -15,12 +15,19 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     [SerializeField] private GameObject _parentGO;
     [SerializeField] private GameObject _prefabGO;
     [SerializeField] private int _amountOfGOsInPool;
+    [SerializeField] private int _numOfRemaingGOsInPool;
     [SerializeField] private int _nextPooledGO_ID;
     [Space] [Space] 
     [SerializeField] private int _numOfWaves;
     [SerializeField] private int _currWave;
     [SerializeField] private float _currWaveStartTime;
     [SerializeField] private float _currTime;
+    [Space]
+    [SerializeField] private int _maxSpawnsPerWave;
+    [SerializeField] private int _minSpawnsPerWave;
+    [SerializeField] private float _minLengthOfWave;
+    [SerializeField] private float _maxLengthOfWave;
+    [Space]
     [SerializeField] private int[] _amountForWave;
     [SerializeField] private List<float> _waveLengths;
 
@@ -58,24 +65,31 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         _currTime = Time.time;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("RobotAI"))
+        {
+            other.GetComponent<RobotAI>().ReachedEnd();
+        }
+    }
+
     private IEnumerator StartWaves()
     {
         if (_numOfWaves > 0)
         {
-            StartCoroutine(EnableWaveGOs(_nextPooledGO_ID, _spawnWaves[_currWave].spawnAmount));
             _currWaveStartTime = Time.time;
+            StartCoroutine(EnableWaveGOs(_nextPooledGO_ID, _spawnWaves[_currWave].spawnAmount));
             yield return new WaitForSeconds(_spawnWaves[_currWave].length);
             if (_currWave < _numOfWaves)
             {
-                _nextPooledGO_ID += _spawnWaves[_currWave].spawnAmount;
+                if (_numOfRemaingGOsInPool < _maxSpawnsPerWave)
+                { _nextPooledGO_ID = 0; }
+                else { _nextPooledGO_ID += _spawnWaves[_currWave].spawnAmount; }
                 _currWave += 1;
                 StartCoroutine(StartWaves());
             }
         }
-        else
-        {
-            Debug.Log("SpawnManager:StartWaves() _numWaves <= 0!");
-        }
+        else { Debug.Log("SpawnManager:StartWaves() _numWaves <= 0!"); }
     }
 
     private IEnumerator EnableWaveGOs(int firstGO_ID, int numToEnable)
@@ -84,6 +98,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         {
             float delaySpawn = Random.Range(0, 11) / 2;
             _spawnedPoolGOs[i].SetActive(true);
+            _numOfRemaingGOsInPool = (_amountOfGOsInPool - i) -1;
             yield return new WaitForSeconds(delaySpawn);
         }
     }
@@ -93,9 +108,9 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         for (int i = 0; i < numOfWaves; i++)
         {
             wavesArray[i].id = i;
-            wavesArray[i].length = Random.Range(45, 90);
+            wavesArray[i].length = Random.Range(_minLengthOfWave, _maxLengthOfWave);
             _waveLengths[i] = wavesArray[i].length;
-            wavesArray[i].spawnAmount = Random.Range(7, 25);
+            wavesArray[i].spawnAmount = Random.Range(_minSpawnsPerWave, _maxSpawnsPerWave);
             _amountForWave[i] = wavesArray[i].spawnAmount;
         }
     }
@@ -126,19 +141,24 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         if (_prefabGO == null) { Debug.LogError("SpawnManager:DoNullChecks() _prefabGo is NULL!"); }
 
         if (_amountOfGOsInPool == null | _amountOfGOsInPool < 1)
-        {
-            Debug.Log("SpawnManager:DoNullChecks() _amountToSpawn is NULL or < 1! Assigned to 100.");
-            _amountOfGOsInPool = 100;
-        }
+        { Debug.Log("SpawnManager:DoNullChecks() _amountToSpawn is NULL or < 1! Assigned to 100."); _amountOfGOsInPool = 100; }
         
         if (_defaultGOPosition == Vector3.zero) { Debug.LogError("SpawnManager:DoNullChecks() _defaultPosition is Vector3.zero!");}
         if (_defaultGORotation == Vector3.zero) { Debug.LogError("SpawnManager:DoNullChecks() _defaultRotation is Vector3.zero!");}
 
         if (_numOfWaves == null | _numOfWaves < 1)
-        {
-            Debug.Log("SpawnManager:DoNullChecks() _numOfWaves is NULL or < 1! Assigned to 10.");
-            _numOfWaves = 10;
-        }
-        
+        { Debug.Log("SpawnManager:DoNullChecks() _numOfWaves is NULL or < 1! Assigned to 10."); _numOfWaves = 10; }
+
+        if (_maxSpawnsPerWave < 1)
+        { Debug.Log("SpawnManager:DoNullChecks() _maxSpawnsPerWave is < 1! Set to 25."); _maxSpawnsPerWave = 25; }
+
+        if (_minSpawnsPerWave < 1)
+        { Debug.Log("SpawnManager:DoNullChecks() _minSpawnsPerWave is < 1! Set to 7."); _minSpawnsPerWave = 7; }
+
+        if (_maxLengthOfWave < 1)
+        { Debug.Log("SpawnManager:DoNullChecks() _maxLengthOfWave < 1! Set to 90."); _maxLengthOfWave = 90; }
+
+        if (_minLengthOfWave < 1)
+        { Debug.Log("SpawnManager:DoNullChecks() _minLengthOfWave < 1! Set to 45."); _minLengthOfWave = 45; }
     }
 }
