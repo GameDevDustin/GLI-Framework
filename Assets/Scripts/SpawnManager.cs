@@ -15,7 +15,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     [SerializeField] private GameObject _parentGO;
     [SerializeField] private GameObject _prefabGO;
     [SerializeField] private int _amountOfGOsInPool;
-    [SerializeField] private int _numOfRemaingGOsInPool;
+    [SerializeField] private int _numOfRemainingGOsInPool;
     [SerializeField] private int _nextPooledGO_ID;
     [Space] [Space] 
     [SerializeField] private int _numOfWaves;
@@ -82,7 +82,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
             yield return new WaitForSeconds(_spawnWaves[_currWave].length);
             if (_currWave < _numOfWaves)
             {
-                if (_numOfRemaingGOsInPool < _maxSpawnsPerWave)
+                if (_numOfRemainingGOsInPool < _maxSpawnsPerWave)
                 { _nextPooledGO_ID = 0; }
                 else { _nextPooledGO_ID += _spawnWaves[_currWave].spawnAmount; }
                 _currWave += 1;
@@ -98,7 +98,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         {
             float delaySpawn = Random.Range(0, 11) / 2;
             _spawnedPoolGOs[i].SetActive(true);
-            _numOfRemaingGOsInPool = (_amountOfGOsInPool - i) -1;
+            _numOfRemainingGOsInPool = (_amountOfGOsInPool - i) -1;
             yield return new WaitForSeconds(delaySpawn);
         }
     }
