@@ -6,6 +6,9 @@ TagManager:
   tags:
   - RobotAI
   - Cover
+  - HitCollider
+  - NearMissCollider
+  - NearMiss
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - 
   - Cover
   - PowerCoreSphere
-  - 
+  - NearMiss
   - 
   - 
   - 

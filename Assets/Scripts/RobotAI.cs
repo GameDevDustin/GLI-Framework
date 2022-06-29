@@ -362,6 +362,13 @@ public class RobotAI : MonoBehaviour
         _aiHealth -= damageAmount;
         if (_aiHealth <= 0)
             { OnDeath(); }
+        RunToCover();
+    }
+
+    public void DetectNearMiss()
+    {
+        RunToCover();
+        Debug.Log("DetectNearMiss() fired.");
     }
 
     private void OnDeath() {

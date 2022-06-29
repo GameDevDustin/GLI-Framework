@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,19 +29,26 @@ public class Player : MonoBehaviour
         Transform hitTransform;
 
         if (Physics.Raycast(rayOrigin, out hitInfo))
-        { 
-            hitTransform = hitInfo.transform;
-            int hitLayer = hitTransform.gameObject.layer;
-            
-            if (hitTransform.CompareTag("RobotAI"))
-            {
-                hitTransform.GetComponent<RobotAI>().TakeDamage(55f);
-            }
+        {
+            Collider hitCollider = hitInfo.collider;
+            int hitLayer = hitCollider.gameObject.layer;
 
+            Transform hitParent = hitCollider.transform.parent;
+
+            if (hitCollider.CompareTag("HitCollider"))
+            {
+                hitParent.GetComponent<RobotAI>().TakeDamage(55f);
+                // Debug.Log("Hit collider registered.");
+            } else if (hitCollider.CompareTag("NearMissCollider"))
+            {
+                hitParent.GetComponent<RobotAI>().DetectNearMiss();
+                // Debug.Log("NearMiss collider registered.");
+            }
+            
             if (hitLayer == 10)
             {
-                Debug.Log("hitLayer = " + hitLayer.ToString());
-                Debug.Log("Cover object hit!");
+                // Debug.Log("hitLayer = " + hitLayer.ToString());
+                // Debug.Log("Cover object hit!");
             }
         }
         _timeWeaponLastFired = Time.time;
