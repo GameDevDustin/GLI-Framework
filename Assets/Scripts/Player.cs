@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -29,13 +28,21 @@ public class Player : MonoBehaviour
         Transform hitTransform;
 
         if (Physics.Raycast(rayOrigin, out hitInfo))
-        { hitTransform = hitInfo.transform;
+        { 
+            hitTransform = hitInfo.transform;
+            int hitLayer = hitTransform.gameObject.layer;
+            
             if (hitTransform.CompareTag("RobotAI"))
             {
                 hitTransform.GetComponent<RobotAI>().TakeDamage(55f);
             }
+
+            if (hitLayer == 10)
+            {
+                Debug.Log("hitLayer = " + hitLayer.ToString());
+                Debug.Log("Cover object hit!");
+            }
         }
-        
         _timeWeaponLastFired = Time.time;
     }
 
