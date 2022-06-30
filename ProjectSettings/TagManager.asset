@@ -9,6 +9,7 @@ TagManager:
   - HitCollider
   - NearMissCollider
   - NearMiss
+  - Explodable
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Cover
   - PowerCoreSphere
   - NearMiss
-  - 
+  - Explodable
   - 
   - 
   - 

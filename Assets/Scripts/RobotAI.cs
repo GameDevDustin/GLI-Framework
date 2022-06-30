@@ -366,10 +366,7 @@ public class RobotAI : MonoBehaviour
     }
 
     public void DetectNearMiss()
-    {
-        RunToCover();
-        Debug.Log("DetectNearMiss() fired.");
-    }
+    { RunToCover(); }
 
     private void OnDeath() {
         _animator.SetTrigger("Death");

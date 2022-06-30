@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     {
         Ray rayOrigin = _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
         RaycastHit hitInfo;
-        Transform hitTransform;
 
         if (Physics.Raycast(rayOrigin, out hitInfo))
         {
@@ -34,16 +33,28 @@ public class Player : MonoBehaviour
             int hitLayer = hitCollider.gameObject.layer;
 
             Transform hitParent = hitCollider.transform.parent;
+            Transform hitTransform = hitCollider.transform;
 
-            if (hitCollider.CompareTag("HitCollider"))
+            switch (hitCollider.tag)
             {
-                hitParent.GetComponent<RobotAI>().TakeDamage(55f);
-                // Debug.Log("Hit collider registered.");
-            } else if (hitCollider.CompareTag("NearMissCollider"))
-            {
-                hitParent.GetComponent<RobotAI>().DetectNearMiss();
-                // Debug.Log("NearMiss collider registered.");
+                case "HitCollider":
+                    hitParent.GetComponent<RobotAI>().TakeDamage(55f);
+                    break;
+                case "NearMissCollider":
+                    hitParent.GetComponent<RobotAI>().DetectNearMiss();
+                    break;
+                case "Explodable":
+                    hitTransform.GetComponent<PropaneTank>().TakeDamage(55f);
+                    break;
             }
+            
+            // if (hitCollider.CompareTag("HitCollider"))
+            // {
+            //     hitParent.GetComponent<RobotAI>().TakeDamage(55f);
+            // } else if (hitCollider.CompareTag("NearMissCollider"))
+            // {
+            //     hitParent.GetComponent<RobotAI>().DetectNearMiss();
+            // }
             
             if (hitLayer == 10)
             {
