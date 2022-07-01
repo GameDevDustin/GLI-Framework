@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = Unity.Mathematics.Random;
+using UnityEngine.Events;
 
 public class RobotAI : MonoBehaviour
 {
@@ -358,16 +359,19 @@ public class RobotAI : MonoBehaviour
         this.GameObject().SetActive(false);
     }
 
-    public void TakeDamage(float damageAmount) {
+    public bool TakeDamage(float damageAmount) {
         _aiHealth -= damageAmount;
-        if (_aiHealth <= 0)
-            { OnDeath(); }
+        if (_aiHealth <= 0) {
+            OnDeath();
+            return true;
+        }
         RunToCover();
+        return false;
     }
 
     public void DetectNearMiss()
     { RunToCover(); }
-
+    
     private void OnDeath() {
         _animator.SetTrigger("Death");
         StartCoroutine(waitForDeathAnimation());

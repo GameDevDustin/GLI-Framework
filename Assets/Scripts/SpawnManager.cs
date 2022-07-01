@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.Events;
 
 public class SpawnManager : MonoSingleton<SpawnManager>
 {
@@ -32,6 +32,10 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     [SerializeField] private List<float> _waveLengths;
 
     private Wave[] _spawnWaves;
+    [Space]
+    [SerializeField] private UnityEvent<int> enemyCountChanged; 
+    [SerializeField] private UnityEvent<float> timeRemainingChanged;
+    [SerializeField] private UnityEvent<string, int> setNotificationText;
     [Space] [Space]
     [SerializeField] List<GameObject> _spawnedPoolGOs;
     
@@ -67,21 +71,22 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("RobotAI"))
-        {
-            other.GetComponent<RobotAI>().ReachedEnd();
+        if (other.transform.parent.CompareTag("RobotAI")) {
+            other.GetComponentInParent<RobotAI>().ReachedEnd();
+            enemyCountChanged.Invoke(-1);
         }
     }
 
-    private IEnumerator StartWaves()
-    {
+    private IEnumerator StartWaves() {
         if (_numOfWaves > 0)
         {
             _currWaveStartTime = Time.time;
+            UpdateUI(_spawnWaves[_currWave].spawnAmount, _spawnWaves[_currWave].length);
+            setNotificationText.Invoke("WARNING", _currWave + 1);
             StartCoroutine(EnableWaveGOs(_nextPooledGO_ID, _spawnWaves[_currWave].spawnAmount));
             yield return new WaitForSeconds(_spawnWaves[_currWave].length);
-            if (_currWave < _numOfWaves)
-            {
+            
+            if (_currWave < _numOfWaves) {
                 if (_numOfRemainingGOsInPool < _maxSpawnsPerWave)
                 { _nextPooledGO_ID = 0; }
                 else { _nextPooledGO_ID += _spawnWaves[_currWave].spawnAmount; }
@@ -94,8 +99,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 
     private IEnumerator EnableWaveGOs(int firstGO_ID, int numToEnable)
     {
-        for (int i = firstGO_ID; i < firstGO_ID + numToEnable; i++)
-        {
+        for (int i = firstGO_ID; i < firstGO_ID + numToEnable; i++) {
             float delaySpawn = Random.Range(0, 11) / 2;
             _spawnedPoolGOs[i].SetActive(true);
             _numOfRemainingGOsInPool = (_amountOfGOsInPool - i) -1;
@@ -105,8 +109,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     
     private void GenerateWaves(ref Wave[] wavesArray, int numOfWaves)
     {
-        for (int i = 0; i < numOfWaves; i++)
-        {
+        for (int i = 0; i < numOfWaves; i++) {
             wavesArray[i].id = i;
             wavesArray[i].length = Random.Range(_minLengthOfWave, _maxLengthOfWave);
             _waveLengths[i] = wavesArray[i].length;
@@ -136,6 +139,11 @@ public class SpawnManager : MonoSingleton<SpawnManager>
             { obj.transform.SetPositionAndRotation(position, quaternion.Euler(rotation.x, rotation.y, rotation.z)); });
     }
 
+    private void UpdateUI(int numOfEnemies, float timeRemaining) {
+        enemyCountChanged.Invoke(numOfEnemies);
+        timeRemainingChanged.Invoke(timeRemaining);
+    }
+    
     private void DoNullChecks()
     {
         if (_prefabGO == null) { Debug.LogError("SpawnManager:DoNullChecks() _prefabGo is NULL!"); }
