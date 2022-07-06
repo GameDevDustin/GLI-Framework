@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PropaneTank : MonoBehaviour
 {
@@ -15,26 +16,31 @@ public class PropaneTank : MonoBehaviour
     [SerializeField] private float _defaultLargeDurability;
     [SerializeField] private float _defaultMediumDurability;
     [SerializeField] private float _defaultSmallDurability;
+    [Space] [Space] [SerializeField] private BoxCollider _damageCollider;
+    [SerializeField] UnityEvent doDamageInZone;
+    [SerializeField] private bool _isExploding;
 
     private void Start() {
          DoNullChecks();
          if (_durability < 1) { AssignDurability(); }
          _vfxExplosionGO = transform.GetChild(0).gameObject;
+         _isExploding = false;
     }
 
     public void TakeDamage(float damageAmount) {
         _durability -= damageAmount;
-        if (_durability <= 0) { Explode(); }
+        if (_durability <= 0 && !_isExploding) { Explode(); }
     }
 
     private void Explode() {
+        _isExploding = true;
         _vfxExplosionGO.SetActive(true);
         _audioSource.Play();
+        doDamageInZone.Invoke();
         StartCoroutine(DelayHide());
     }
 
-    private IEnumerator DelayHide()
-    {
+    private IEnumerator DelayHide() {
         yield return new WaitForSeconds(3.8f);
         transform.gameObject.SetActive(false);
     }

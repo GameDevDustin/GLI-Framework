@@ -34,6 +34,7 @@ public class RobotAI : MonoBehaviour
     [Space][Space]
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _deathAudioClip;
+    [SerializeField] private bool _isDying;
     
 
     private void OnEnable()
@@ -56,6 +57,7 @@ public class RobotAI : MonoBehaviour
         LoadWaypointArrays(ref _coverWaypointsParentGO, "CoverWaypoints", ref _coverWaypoints,
             ref _numOfCoverWaypoints);
         _coverStatus = CoverStatus.None;
+        _isDying = false;
 
         _animator = GetComponent<Animator>();
         if (_animator == null)
@@ -375,13 +377,20 @@ public class RobotAI : MonoBehaviour
     public void DetectNearMiss()
     { RunToCover(); }
     
-    private void OnDeath() {
+    private void OnDeath()
+    {
+        _isDying = true;
         _animator.SetTrigger("Death");
         _audioSource.clip = _deathAudioClip;
         _audioSource.Play();
         StartCoroutine(waitForDeathAnimation());
     }
 
+    public bool IsDying()
+    {
+        return _isDying;
+    }
+    
     IEnumerator waitForDeathAnimation() {
         yield return new WaitForSeconds(3.3f);
         ResetValues(); 
