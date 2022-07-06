@@ -9,6 +9,7 @@ public class PropaneTank : MonoBehaviour
 
     [SerializeField] private TankSize _tankSize;
     [SerializeField] private float _durability;
+    [SerializeField] private AudioSource _audioSource;
     private GameObject _vfxExplosionGO;
     [Space]
     [SerializeField] private float _defaultLargeDurability;
@@ -28,6 +29,7 @@ public class PropaneTank : MonoBehaviour
 
     private void Explode() {
         _vfxExplosionGO.SetActive(true);
+        _audioSource.Play();
         StartCoroutine(DelayHide());
     }
 

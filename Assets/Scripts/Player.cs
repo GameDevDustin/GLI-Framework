@@ -17,7 +17,9 @@ public class Player : MonoBehaviour
     [SerializeField] private UnityEvent<int> ammoCountChanged;
     [SerializeField] private UnityEvent<int> scoreChanged;
     [SerializeField] private UnityEvent<int> enemyAmountChange;
-    
+    [SerializeField] private UnityEvent playerFiredWeapon;
+    [SerializeField] private UnityEvent coverImpactHit;
+
     private void Start()
     { DoNullChecks(); UpdateAmmoUI();}
     
@@ -34,6 +36,7 @@ public class Player : MonoBehaviour
         Ray rayOrigin = _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
         RaycastHit hitInfo;
 
+        playerFiredWeapon.Invoke();
         _currAmmoCount -= 1;
         UpdateAmmoUI();
         
@@ -59,18 +62,9 @@ public class Player : MonoBehaviour
                     break;
             }
             
-            // if (hitCollider.CompareTag("HitCollider"))
-            // {
-            //     hitParent.GetComponent<RobotAI>().TakeDamage(55f);
-            // } else if (hitCollider.CompareTag("NearMissCollider"))
-            // {
-            //     hitParent.GetComponent<RobotAI>().DetectNearMiss();
-            // }
-            
             if (hitLayer == 10)
             {
-                // Debug.Log("hitLayer = " + hitLayer.ToString());
-                // Debug.Log("Cover object hit!");
+                coverImpactHit.Invoke();
             }
         }
         _timeWeaponLastFired = Time.time;
@@ -101,7 +95,7 @@ public class Player : MonoBehaviour
     }
     
     private void DoNullChecks() {
-        if (_weaponFireDelay < 1) { _weaponFireDelay = 1f; Debug.Log("Player:DoNullChecks() _weaponFireDelay is < 1! Set to 1."); }
+        if (_weaponFireDelay <= 0) { _weaponFireDelay = 1f; Debug.Log("Player:DoNullChecks() _weaponFireDelay is < 1! Set to 1."); }
         if (_currAmmoCount < 1) { _currAmmoCount = 100; Debug.Log("_currAmmoCount is < 1! Set to 100."); }
         if (_currScore != 0) { _currScore = 0; Debug.Log("_currScore was not equal to 0! Set to 0."); }
     }

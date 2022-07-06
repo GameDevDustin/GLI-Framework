@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -33,7 +34,8 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 
     private Wave[] _spawnWaves;
     [Space]
-    [SerializeField] private UnityEvent<int> enemyCountChanged; 
+    [SerializeField] private UnityEvent<int> enemyCountChanged;
+    [SerializeField] private UnityEvent enemyReachedEnd;
     [SerializeField] private UnityEvent<float> timeRemainingChanged;
     [SerializeField] private UnityEvent<string, int> setNotificationText;
     [Space] [Space]
@@ -74,6 +76,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         if (other.transform.parent.CompareTag("RobotAI")) {
             other.GetComponentInParent<RobotAI>().ReachedEnd();
             enemyCountChanged.Invoke(-1);
+            enemyReachedEnd.Invoke();
         }
     }
 

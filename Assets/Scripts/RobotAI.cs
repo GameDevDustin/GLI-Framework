@@ -31,7 +31,10 @@ public class RobotAI : MonoBehaviour
     [SerializeField] private float _animSpeed;
     [SerializeField] private bool _animDeath;
     [SerializeField] private bool _animHiding;
-
+    [Space][Space]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _deathAudioClip;
+    
 
     private void OnEnable()
     {
@@ -374,6 +377,8 @@ public class RobotAI : MonoBehaviour
     
     private void OnDeath() {
         _animator.SetTrigger("Death");
+        _audioSource.clip = _deathAudioClip;
+        _audioSource.Play();
         StartCoroutine(waitForDeathAnimation());
     }
 
