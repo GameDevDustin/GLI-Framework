@@ -22,30 +22,38 @@ public class DamageZone : MonoBehaviour
         if (_doDamagePhase && other.CompareTag("HitCollider")) {
             Transform parentTransform = other.transform.parent;
 
-            if (parentTransform != null) { parentTransform.GetComponent<RobotAI>().TakeDamage(300f); } 
-        } else if (other.CompareTag("HitCollider")) {
+            if (parentTransform != null) {
+                parentTransform.GetComponent<RobotAI>().TakeDamage(300f);
+            }
+        }
+        else if (other.CompareTag("HitCollider")) {
             _transformsInCollider[_numOfAiInCollider] = other.transform;
             _numOfAiInCollider += 1;
         }
     }
 
-    private void OnTriggerExit(Collider other) {
+    private void OnTriggerExit(Collider other)
+    {
         if (other.CompareTag("HitCollider")) {
-            if (_transformsInCollider[_numOfAiInCollider] != null) { _transformsInCollider[_numOfAiInCollider - 1] = null; }
+            if (_transformsInCollider != null && _transformsInCollider[_numOfAiInCollider] != null) {
+                _transformsInCollider[_numOfAiInCollider - 1] = null;
+            }
             _numOfAiInCollider -= 1;
         }
     }
 
-    public void DoDamage() {
+    public void DoDamage()
+    {
         _doDamagePhase = true;
-        
-            foreach (Transform tran in _transformsInCollider) {
-                if (tran != null) {
-                    Transform tranParent = tran.parent;
-                    if (tranParent.GetComponent<RobotAI>().IsDying() == false) {
-                        tranParent.GetComponent<RobotAI>().TakeDamage(300f);
-                    }
+
+        foreach (Transform tran in _transformsInCollider) {
+            if (tran != null) {
+                Transform tranParent = tran.parent;
+
+                if (tranParent.GetComponent<RobotAI>().IsDying() == false) {
+                    tranParent.GetComponent<RobotAI>().TakeDamage(300f);
                 }
             }
+        }
     }
 }

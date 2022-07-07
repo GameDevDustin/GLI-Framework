@@ -37,18 +37,15 @@ public class RobotAI : MonoBehaviour
     [SerializeField] private bool _isDying;
     
 
-    private void OnEnable()
-    {
-        if (_navMeshAgent != null)
-        {
+    private void OnEnable() {
+        if (_navMeshAgent != null) {
             _navMeshAgent.isStopped = false;
             _navMeshAgent.destination = _currDestination;
             SetAnimationState("WalkToRun");
         }
     }
 
-    private void Start()
-    {
+    private void Start() {
         if (_aiHealth < 1) { _aiHealth = 100; Debug.Log("Player:Start() _aiHealth is < 1! Set to 100."); }
         _defaultHealth = _aiHealth;
         
@@ -60,8 +57,7 @@ public class RobotAI : MonoBehaviour
         _isDying = false;
 
         _animator = GetComponent<Animator>();
-        if (_animator == null)
-        {
+        if (_animator == null) {
             Debug.LogError("RobotAI|Start() _animator is NULL!");
         }
 
@@ -92,14 +88,12 @@ public class RobotAI : MonoBehaviour
     }
 
     //TESTING COROUTINES AND METHODS ------------------------
-    private IEnumerator TestingCoroutine()
-    {
+    private IEnumerator TestingCoroutine() {
         yield return new WaitForSeconds(8f);
         SetCoverStatus(CoverStatus.RunningTo);
     }
 
-    private IEnumerator TestingHitDetected()
-    {
+    private IEnumerator TestingHitDetected() {
         yield return new WaitForSeconds(5f);
         TestingDebugLogHit();
         RunToCover();
@@ -132,40 +126,20 @@ public class RobotAI : MonoBehaviour
     }
     //--------------------------------------------------------
     
-    void Update()
-    {
-        // DetectHitOrNearMiss();
-        
-        if (!_navMeshAgent.isStopped)
-        { Move(); }
+    void Update() {
+        if (!_navMeshAgent.isStopped) { Move(); }
     }
 
-    private void Move()
-    {
-            //Check distance to next waypoint
-            if (_coverStatus == CoverStatus.RunningTo && _navMeshAgent.remainingDistance < 1f)
-            {
+    private void Move() {
+            if (_coverStatus == CoverStatus.RunningTo && _navMeshAgent.remainingDistance < 1f) {
                 SetCoverStatus(CoverStatus.AtCover);
             }
-            else if (_coverStatus == CoverStatus.None && _currDestination == _waypointEndPosition && _navMeshAgent.remainingDistance < 1f)  //TO DO This runs at start of game, need to skip at start of game
-            {
-                //SetCoverStatus(CoverStatus.AtCover);  //This will keep the AI from running indefinitely after reaching the end
-                //Deal with reached end, need respawn logic
-                //ReachedEnd();
-            }
-            else
-            {
-                //Run towards end position
-            }
     }
 
-    private void SetCoverStatus(CoverStatus newCoverStatus)
-    {
-        switch (newCoverStatus)
-        {
+    private void SetCoverStatus(CoverStatus newCoverStatus) { 
+        switch (newCoverStatus) {
             case CoverStatus.None: //Run to endpoint
-                switch (_coverStatus)
-                {
+                switch (_coverStatus) {
                     case CoverStatus.None:
                         //Should only occur on first spawn, do nothing
                         SetAnimationState("Run");
@@ -181,12 +155,10 @@ public class RobotAI : MonoBehaviour
                 }
                 break;
             case CoverStatus.RunningTo: //Run to cover
-                switch (_coverStatus)
-                {
+                switch (_coverStatus) {
                     case CoverStatus.None:
                         //Was running to end point, now running to nearest cover
-                        if (!_coverCooldown)
-                        {
+                        if (!_coverCooldown) {
                             _currDestination = GetNearestCoverWaypoint();
                             _navMeshAgent.destination = _currDestination; 
                         }
@@ -200,8 +172,7 @@ public class RobotAI : MonoBehaviour
                 }
                 break;
             case CoverStatus.AtCover: //Reached cover, stay for set duration
-                switch (_coverStatus)
-                {
+                switch (_coverStatus) {
                     case CoverStatus.None:
                         //Should not occur, do nothing | if does occur, same as RunningTo
                         break;
@@ -220,11 +191,9 @@ public class RobotAI : MonoBehaviour
         _coverStatus = newCoverStatus;
     }
 
-    private void SetAnimationState(string animationState)
-    {
+    private void SetAnimationState(string animationState) {
         //WalkToRun | CoverIdle | Run
-        switch (animationState)
-        {
+        switch (animationState) {
             case "Run":
                 _navMeshAgent.isStopped = false;
                 _animator.SetFloat("Speed", 5f);
@@ -243,31 +212,26 @@ public class RobotAI : MonoBehaviour
         }
     }
 
-    private IEnumerator WalkToRun()
-    {
+    private IEnumerator WalkToRun() {
         _animator.SetFloat("Speed", 2f);
         yield return new WaitForSeconds(0.5f);
         _animator.SetFloat("Speed", 5f);
     }
 
-    private IEnumerator StartCoverCooldown()
-    {
+    private IEnumerator StartCoverCooldown() {
         _coverCooldown = true;
         yield return new WaitForSeconds(3f);
         _coverCooldown = false;
     }
 
-    private Vector3 GetNearestCoverWaypoint()
-    {
+    private Vector3 GetNearestCoverWaypoint() {
         float shortestDistance = 1000f;
         int closestCoverWPID = 0;
         Transform closestCoverWP;
         
-        for (int i = 0; i < _numOfCoverWaypoints; i++)
-        {
+        for (int i = 0; i < _numOfCoverWaypoints; i++) {
             float tempDistance = Vector3.Distance(_coverWaypoints[i].position, transform.position);
-            if (tempDistance < shortestDistance)
-            {
+            if (tempDistance < shortestDistance) {
                 shortestDistance = tempDistance;
                 closestCoverWPID = i;
             }
@@ -282,27 +246,20 @@ public class RobotAI : MonoBehaviour
 
         bool nextWaypointIsPositiveX = !(closestCoverWPID > 3 && closestCoverWPID < 9);
 
-        if (closestCoverWPID + 1 < _numOfCoverWaypoints)
-        {
-            if (nextWaypointIsPositiveX == true)
-            {
+        if (closestCoverWPID + 1 < _numOfCoverWaypoints) {
+            if (nextWaypointIsPositiveX == true) {
                 //Debug.Log("nextWPisPositiveX = true");
                 if (closestCoverWP.position.x > transform.position.x) { closestCoverWP = _coverWaypoints[closestCoverWPID + 1]; }
-            }
-            else
-            {
+            } else {
                 //Debug.Log("nextWPisPositiveX = false");
                 if (closestCoverWP.position.x < transform.position.x) { closestCoverWP = _coverWaypoints[closestCoverWPID + 1]; }
             }
         }
-        
         return closestCoverWP.position;
     }
 
-    private void RunToCover()
-    {
-        switch (_coverStatus)
-        {
+    private void RunToCover() {
+        switch (_coverStatus) {
             case CoverStatus.None:  //Already running
                 //Move to nearest cover
                 SetCoverStatus(CoverStatus.RunningTo);
@@ -317,8 +274,7 @@ public class RobotAI : MonoBehaviour
         }
     }
     
-    private IEnumerator WaitToRun()
-    {
+    private IEnumerator WaitToRun() {
         float waitTime = UnityEngine.Random.Range(3f, 7f);   
         yield return new WaitForSeconds(waitTime);
         _currDestination = _waypointEndPosition;
@@ -326,13 +282,11 @@ public class RobotAI : MonoBehaviour
         SetCoverStatus(CoverStatus.None);
     }
     
-    private void LoadWaypointArrays(ref GameObject parentGO, string parentGOName, ref Transform[] waypointsArray, ref int numOfWaypoints)
-    {
+    private void LoadWaypointArrays(ref GameObject parentGO, string parentGOName, ref Transform[] waypointsArray, ref int numOfWaypoints) {
         parentGO = GameObject.Find(parentGOName);
         
         if (parentGO == null) {Debug.LogError("RobotAI|LoadWaypointArrays() "+ parentGOName + " is NULL!");}
-        else
-        {
+        else {
             numOfWaypoints = parentGO.GetComponentInChildren<Transform>().childCount;
             waypointsArray = new Transform[numOfWaypoints];
 
@@ -342,13 +296,9 @@ public class RobotAI : MonoBehaviour
         }
     }
     
-    public void ReachedEnd()
-    {
-        ResetValues();
-    }
+    public void ReachedEnd() { ResetValues(); }
 
-    public void ResetValues()
-    {
+    public void ResetValues() {
         _navMeshAgent.isStopped = true;
         _aiHealth = _defaultHealth;
         _coverStatus = CoverStatus.None;
@@ -366,7 +316,8 @@ public class RobotAI : MonoBehaviour
 
     public bool TakeDamage(float damageAmount) {
         _aiHealth -= damageAmount;
-        if (_aiHealth <= 0) {
+        if (_aiHealth <= 0 && !_isDying) {
+            LevelManager.Instance.AddEnemiesKilled(1);
             OnDeath();
             return true;
         }
@@ -374,24 +325,19 @@ public class RobotAI : MonoBehaviour
         return false;
     }
 
-    public void DetectNearMiss()
-    { RunToCover(); }
+    public void DetectNearMiss() { RunToCover(); }
     
-    private void OnDeath()
-    {
-        _isDying = true;
+    private void OnDeath() {
         _animator.SetTrigger("Death");
         _audioSource.clip = _deathAudioClip;
         _audioSource.Play();
-        StartCoroutine(waitForDeathAnimation());
+        if (!_isDying && this.isActiveAndEnabled == true) { StartCoroutine(waitForDeathAnimation()); }
     }
 
-    public bool IsDying()
-    {
-        return _isDying;
-    }
+    public bool IsDying() { return _isDying; }
     
     IEnumerator waitForDeathAnimation() {
+        _isDying = true;
         yield return new WaitForSeconds(3.3f);
         ResetValues(); 
     }

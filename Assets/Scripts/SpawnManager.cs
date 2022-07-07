@@ -78,9 +78,10 @@ public class SpawnManager : MonoSingleton<SpawnManager>
             _numOfEnemiesReachedEnd += 1;
             enemyCountChanged.Invoke(-1);
             enemyReachedEnd.Invoke();
-            if (_numOfEnemiesReachedEnd > (_totalEnemiesAllWaves / 2))
-            {
+            if (_numOfEnemiesReachedEnd > (_totalEnemiesAllWaves / 2)) {
                 loseCondition.Invoke();
+            } else if (LevelManager.Instance.GetOnLastWave() == true && LevelManager.Instance.GetEnemiesAlive() <= 0) {
+                UIManager.Instance.WinConditionMet();
             }
         }
     }
@@ -89,6 +90,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         if (_numOfWaves > 0 && UIManager.Instance.GetGameOverStatus() == false) {
             _currWaveStartTime = Time.time;
             UpdateUI(_spawnWaves[_currWave].spawnAmount, _spawnWaves[_currWave].length);
+            LevelManager.Instance.AddEnemiesAlive(_spawnWaves[_currWave].spawnAmount);
             setNotificationText.Invoke("WARNING", _currWave + 1);
             StartCoroutine(EnableWaveGOs(_nextPooledGO_ID, _spawnWaves[_currWave].spawnAmount));
             yield return new WaitForSeconds(_spawnWaves[_currWave].length);
@@ -100,6 +102,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
                 _currWave += 1;
                 StartCoroutine(StartWaves());
             }
+            else if (_currWave + 1 == _numOfWaves) { LevelManager.Instance.SetOnLastWave(true); }
         }
         else { Debug.Log("SpawnManager:StartWaves() _numWaves <= 0!"); }
     }

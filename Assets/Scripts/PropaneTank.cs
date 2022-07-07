@@ -52,7 +52,7 @@ public class PropaneTank : MonoBehaviour
             case TankSize.large: _durability = _defaultLargeDurability; break;
         }
     }
-    
+
     private void DoNullChecks() {
         if (_durability < 0) { _durability = 100; Debug.Log("_health is < 1! Set to 100."); }
         if (_defaultSmallDurability < 1) { _defaultSmallDurability = 50; Debug.Log("_defaultSmallDurability < 1! Set to 50."); }

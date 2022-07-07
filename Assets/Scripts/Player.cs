@@ -16,25 +16,19 @@ public class Player : MonoBehaviour
     [Space]
     [SerializeField] private UnityEvent<int> ammoCountChanged;
     [SerializeField] private UnityEvent<int> scoreChanged;
-    [SerializeField] private UnityEvent<int> enemyAmountChange;
     [SerializeField] private UnityEvent playerFiredWeapon;
     [SerializeField] private UnityEvent coverImpactHit;
-    [SerializeField] private UnityEvent winCondition;
-    [Space] [SerializeField] private int _totalEnemiesKilled;
 
-    private void Start()
-    { DoNullChecks(); UpdateAmmoUI();}
+    private void Start() { DoNullChecks(); UpdateAmmoUI();}
     
-    private void Update()
-    { _currTime = Time.time; CheckPlayerInput(); }
+    private void Update() { _currTime = Time.time; CheckPlayerInput(); }
 
     private void CheckPlayerInput() {
         if (Mouse.current.leftButton.wasPressedThisFrame && WeaponIsReadyToFire())
             { FireWeapon(); }
     }
 
-    private void FireWeapon()
-    {
+    private void FireWeapon() {
         Ray rayOrigin = _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
         RaycastHit hitInfo;
 
@@ -42,22 +36,17 @@ public class Player : MonoBehaviour
         _currAmmoCount -= 1;
         UpdateAmmoUI();
         
-        if (Physics.Raycast(rayOrigin, out hitInfo))
-        {
+        if (Physics.Raycast(rayOrigin, out hitInfo)) {
             Collider hitCollider = hitInfo.collider;
             int hitLayer = hitCollider.gameObject.layer;
 
             Transform hitParent = hitCollider.transform.parent;
             Transform hitTransform = hitCollider.transform;
 
-            switch (hitCollider.tag)
-            {
+            switch (hitCollider.tag) {
                 case "HitCollider":
-                    if (hitParent.GetComponent<RobotAI>().TakeDamage(55f)) { UpdateEnemyUI(); _totalEnemiesKilled += 1; }
+                    hitParent.GetComponent<RobotAI>().TakeDamage(55f);
                     _currScore += 5; UpdateScoreUI();
-                    if (_totalEnemiesKilled >= SpawnManager.Instance.GetTotalNumOfEnemiesAllWaves()) {
-                        winCondition.Invoke();
-                    }
                     break;
                 case "NearMissCollider":
                     hitParent.GetComponent<RobotAI>().DetectNearMiss();
@@ -67,16 +56,14 @@ public class Player : MonoBehaviour
                     break;
             }
             
-            if (hitLayer == 10)
-            {
+            if (hitLayer == 10) {
                 coverImpactHit.Invoke();
             }
         }
         _timeWeaponLastFired = Time.time;
     }
 
-    private bool WeaponIsReadyToFire()
-    {
+    private bool WeaponIsReadyToFire() {
         float timeSinceWeaponLastFired;
         timeSinceWeaponLastFired = _currTime - _timeWeaponLastFired;
 
@@ -84,21 +71,10 @@ public class Player : MonoBehaviour
         else { return false; }
     }
 
-    private void UpdateAmmoUI()
-    {
-        ammoCountChanged.Invoke(_currAmmoCount);
-    }
+    private void UpdateAmmoUI() { ammoCountChanged.Invoke(_currAmmoCount); }
 
-    private void UpdateScoreUI()
-    {
-        scoreChanged.Invoke(_currScore);
-    }
+    private void UpdateScoreUI() { scoreChanged.Invoke(_currScore); }
 
-    private void UpdateEnemyUI()
-    {
-        enemyAmountChange.Invoke(-1);
-    }
-    
     private void DoNullChecks() {
         if (_weaponFireDelay <= 0) { _weaponFireDelay = 1f; Debug.Log("Player:DoNullChecks() _weaponFireDelay is < 1! Set to 1."); }
         if (_currAmmoCount < 1) { _currAmmoCount = 100; Debug.Log("_currAmmoCount is < 1! Set to 100."); }

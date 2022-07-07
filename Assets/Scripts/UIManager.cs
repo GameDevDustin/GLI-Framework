@@ -68,7 +68,7 @@ public class UIManager : MonoSingleton<UIManager>
    }
 
    public void UpdateEnemyCount(int enemyCount) {
-      _currEnemyCount += enemyCount;
+      _currEnemyCount = enemyCount;
       _txtEnemyCount.text = _currEnemyCount.ToString();
    }
 
