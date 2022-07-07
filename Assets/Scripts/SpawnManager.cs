@@ -29,60 +29,64 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     [SerializeField] private float _minLengthOfWave;
     [SerializeField] private float _maxLengthOfWave;
     [Space]
+    [SerializeField] private int _totalEnemiesAllWaves;
+    [SerializeField] private int _numOfEnemiesReachedEnd;
+    [Space]
     [SerializeField] private int[] _amountForWave;
     [SerializeField] private List<float> _waveLengths;
-
     private Wave[] _spawnWaves;
     [Space]
     [SerializeField] private UnityEvent<int> enemyCountChanged;
     [SerializeField] private UnityEvent enemyReachedEnd;
     [SerializeField] private UnityEvent<float> timeRemainingChanged;
     [SerializeField] private UnityEvent<string, int> setNotificationText;
+    [SerializeField] private UnityEvent loseCondition;
     [Space] [Space]
     [SerializeField] List<GameObject> _spawnedPoolGOs;
     
-    public override void Init()
-    {
+    public override void Init() {
         //Debug.Log("SpawnManager:Init() - SpawnManager singleton has been initialized.");
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         _spawnWaves = new Wave[_numOfWaves];
         _amountForWave = new int[_numOfWaves];
         
         for (int i = 0; i < _numOfWaves; i++) { _waveLengths.Add(-1f); }
 
         _nextPooledGO_ID = 0;
+        _numOfEnemiesReachedEnd = 0;
     }
 
-    private void Start()
-    {
+    private void Start() {
         DoNullChecks();
         _spawnedPoolGOs = GeneratePoolGOs(_amountOfGOsInPool);
         SetPositionsAndRotations(_spawnedPoolGOs, _defaultGOPosition, _defaultGORotation);
         _currWave = 0;
         GenerateWaves(ref _spawnWaves, _numOfWaves);
+        
         StartCoroutine(StartWaves());
     }
 
-    private void Update()
-    {
+    private void Update() {
         _currTime = Time.time;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
+    private void OnTriggerEnter(Collider other) {
         if (other.transform.parent.CompareTag("RobotAI")) {
             other.GetComponentInParent<RobotAI>().ReachedEnd();
+            _numOfEnemiesReachedEnd += 1;
             enemyCountChanged.Invoke(-1);
             enemyReachedEnd.Invoke();
+            if (_numOfEnemiesReachedEnd > (_totalEnemiesAllWaves / 2))
+            {
+                loseCondition.Invoke();
+            }
         }
     }
 
     private IEnumerator StartWaves() {
-        if (_numOfWaves > 0)
-        {
+        if (_numOfWaves > 0 && UIManager.Instance.GetGameOverStatus() == false) {
             _currWaveStartTime = Time.time;
             UpdateUI(_spawnWaves[_currWave].spawnAmount, _spawnWaves[_currWave].length);
             setNotificationText.Invoke("WARNING", _currWave + 1);
@@ -100,8 +104,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         else { Debug.Log("SpawnManager:StartWaves() _numWaves <= 0!"); }
     }
 
-    private IEnumerator EnableWaveGOs(int firstGO_ID, int numToEnable)
-    {
+    private IEnumerator EnableWaveGOs(int firstGO_ID, int numToEnable) {
         for (int i = firstGO_ID; i < firstGO_ID + numToEnable; i++) {
             float delaySpawn = Random.Range(0, 11) / 2;
             _spawnedPoolGOs[i].SetActive(true);
@@ -110,23 +113,21 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         }
     }
     
-    private void GenerateWaves(ref Wave[] wavesArray, int numOfWaves)
-    {
+    private void GenerateWaves(ref Wave[] wavesArray, int numOfWaves) {
         for (int i = 0; i < numOfWaves; i++) {
             wavesArray[i].id = i;
             wavesArray[i].length = Random.Range(_minLengthOfWave, _maxLengthOfWave);
             _waveLengths[i] = wavesArray[i].length;
             wavesArray[i].spawnAmount = Random.Range(_minSpawnsPerWave, _maxSpawnsPerWave);
             _amountForWave[i] = wavesArray[i].spawnAmount;
+            _totalEnemiesAllWaves += _amountForWave[i];
         }
     }
     
-    List<GameObject> GeneratePoolGOs(int amount)
-    {
+    List<GameObject> GeneratePoolGOs(int amount) {
         List<GameObject> gos = new List<GameObject>();
         
-        for (int i = 0; i < amount; i++)
-        {
+        for (int i = 0; i < amount; i++) {
             GameObject go = Instantiate(_prefabGO);
             go.transform.parent = _parentGO.transform;
             go.SetActive(false);
@@ -136,8 +137,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         return gos;
     }
     
-    private void SetPositionsAndRotations(List<GameObject> listOfGOs, Vector3 position, Vector3 rotation)
-    {
+    private void SetPositionsAndRotations(List<GameObject> listOfGOs, Vector3 position, Vector3 rotation) {
         listOfGOs.ForEach(delegate(GameObject obj)
             { obj.transform.SetPositionAndRotation(position, quaternion.Euler(rotation.x, rotation.y, rotation.z)); });
     }
@@ -146,9 +146,13 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         enemyCountChanged.Invoke(numOfEnemies);
         timeRemainingChanged.Invoke(timeRemaining);
     }
-    
-    private void DoNullChecks()
+
+    public int GetTotalNumOfEnemiesAllWaves()
     {
+        return _totalEnemiesAllWaves;
+    }
+    
+    private void DoNullChecks() {
         if (_prefabGO == null) { Debug.LogError("SpawnManager:DoNullChecks() _prefabGo is NULL!"); }
 
         if (_amountOfGOsInPool == null | _amountOfGOsInPool < 1)

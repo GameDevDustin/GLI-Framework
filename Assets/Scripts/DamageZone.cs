@@ -31,7 +31,7 @@ public class DamageZone : MonoBehaviour
 
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("HitCollider")) {
-            _transformsInCollider[_numOfAiInCollider - 1] = null;
+            if (_transformsInCollider[_numOfAiInCollider] != null) { _transformsInCollider[_numOfAiInCollider - 1] = null; }
             _numOfAiInCollider -= 1;
         }
     }

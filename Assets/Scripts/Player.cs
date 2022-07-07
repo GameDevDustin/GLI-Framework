@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     [SerializeField] private UnityEvent<int> enemyAmountChange;
     [SerializeField] private UnityEvent playerFiredWeapon;
     [SerializeField] private UnityEvent coverImpactHit;
+    [SerializeField] private UnityEvent winCondition;
+    [Space] [SerializeField] private int _totalEnemiesKilled;
 
     private void Start()
     { DoNullChecks(); UpdateAmmoUI();}
@@ -51,8 +53,11 @@ public class Player : MonoBehaviour
             switch (hitCollider.tag)
             {
                 case "HitCollider":
-                    if (hitParent.GetComponent<RobotAI>().TakeDamage(55f)) { UpdateEnemyUI(); }
+                    if (hitParent.GetComponent<RobotAI>().TakeDamage(55f)) { UpdateEnemyUI(); _totalEnemiesKilled += 1; }
                     _currScore += 5; UpdateScoreUI();
+                    if (_totalEnemiesKilled >= SpawnManager.Instance.GetTotalNumOfEnemiesAllWaves()) {
+                        winCondition.Invoke();
+                    }
                     break;
                 case "NearMissCollider":
                     hitParent.GetComponent<RobotAI>().DetectNearMiss();

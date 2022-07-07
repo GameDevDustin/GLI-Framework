@@ -45,6 +45,18 @@ public class AudioManager : MonoSingleton<AudioManager>
         _audioSource.Play();
     }
 
+    public void MuteAudio()
+    {
+        _audioSource.enabled = false;
+        _bgMusicAudioSource.enabled = false;
+    }
+
+    public void UnmuteAudio()
+    {
+        _audioSource.enabled = true;
+        _bgMusicAudioSource.enabled = true;
+    }
+    
     private IEnumerator CoverImpactDelay()
     {
         yield return new WaitForSeconds(0.075f);
