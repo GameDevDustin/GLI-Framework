@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
+  m_Sun: {fileID: 13456769}
   m_IndirectSpecularColor: {r: 0.13842137, g: 0.13503431, b: 0.13542862, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
@@ -20126,7 +20126,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &532700749
 Transform:
@@ -44477,7 +44477,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1182161163
 Transform:
@@ -44563,9 +44563,9 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 11319
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -44770,7 +44770,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.02e-43, y: 0, z: 0, w: 0.0000000012378303}
+  m_BoundingSphereOverride: {x: 1.02e-43, y: 0, z: 0, w: 1.0102153e+26}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -51719,7 +51719,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1345418841
 Transform:
@@ -51805,9 +51805,9 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 11319
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -77680,7 +77680,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1937115029
 Transform:
@@ -77711,8 +77711,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47fd3f73846087842bef003962cfddfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sphereTransform: {fileID: 0}
-  _speed: 0
+  _sphereTransform: {fileID: 1937115029}
+  _speed: 1
 --- !u!23 &1937115031
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80772,7 +80772,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2002928436
 Transform:
@@ -87204,8 +87204,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2005543647628327427}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.06453164, y: 3.23, z: 0.07507405}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.06453133, y: 3.23, z: 0.075074196}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -88229,7 +88229,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!23 &2544834113321318838
 MeshRenderer:
@@ -89348,8 +89348,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47fd3f73846087842bef003962cfddfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sphereTransform: {fileID: 0}
-  _speed: 0
+  _sphereTransform: {fileID: 90154562572798901}
+  _speed: 1
 --- !u!4 &5006512736258626064
 Transform:
   m_ObjectHideFlags: 0
