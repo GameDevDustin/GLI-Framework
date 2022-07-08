@@ -299,7 +299,7 @@ public class RobotAI : MonoBehaviour
     public void ReachedEnd() { ResetValues(); }
 
     public void ResetValues() {
-        _navMeshAgent.isStopped = true;
+        // _navMeshAgent.isStopped = true;
         _aiHealth = _defaultHealth;
         _coverStatus = CoverStatus.None;
         _currDestination = _waypointEndPosition;
@@ -331,6 +331,7 @@ public class RobotAI : MonoBehaviour
         _animator.SetTrigger("Death");
         _audioSource.clip = _deathAudioClip;
         _audioSource.Play();
+        _navMeshAgent.isStopped = true;
         if (!_isDying && this.isActiveAndEnabled == true) { StartCoroutine(waitForDeathAnimation()); }
     }
 

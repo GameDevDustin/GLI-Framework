@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
         playerFiredWeapon.Invoke();
         _currAmmoCount -= 1;
         UpdateAmmoUI();
-        
+
         if (Physics.Raycast(rayOrigin, out hitInfo)) {
             Collider hitCollider = hitInfo.collider;
             int hitLayer = hitCollider.gameObject.layer;
