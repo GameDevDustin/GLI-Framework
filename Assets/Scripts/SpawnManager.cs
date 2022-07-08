@@ -36,7 +36,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     [SerializeField] private List<float> _waveLengths;
     private Wave[] _spawnWaves;
     [Space]
-    [SerializeField] private UnityEvent<int> enemyCountChanged;
     [SerializeField] private UnityEvent enemyReachedEnd;
     [SerializeField] private UnityEvent<float> timeRemainingChanged;
     [SerializeField] private UnityEvent<string, int> setNotificationText;
@@ -76,33 +75,32 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         if (other.transform.parent.CompareTag("RobotAI")) {
             other.GetComponentInParent<RobotAI>().ReachedEnd();
             _numOfEnemiesReachedEnd += 1;
-            enemyCountChanged.Invoke(-1);
+            LevelManager.Instance.DeductEnemiesAlive(1);
             enemyReachedEnd.Invoke();
             if (_numOfEnemiesReachedEnd > (_totalEnemiesAllWaves / 2)) {
                 loseCondition.Invoke();
-            } else if (LevelManager.Instance.GetOnLastWave() == true && LevelManager.Instance.GetEnemiesAlive() <= 0) {
+            } 
+            if (LevelManager.Instance.GetOnLastWave() == true && LevelManager.Instance.GetEnemiesAlive() <= 0) {
                 UIManager.Instance.WinConditionMet();
             }
         }
     }
 
     private IEnumerator StartWaves() {
-        if (_numOfWaves > 0 && UIManager.Instance.GetGameOverStatus() == false) {
+        if (_numOfWaves > 0 && _currWave < _numOfWaves) {
             _currWaveStartTime = Time.time;
             UpdateUI(_spawnWaves[_currWave].spawnAmount, _spawnWaves[_currWave].length);
             LevelManager.Instance.AddEnemiesAlive(_spawnWaves[_currWave].spawnAmount);
             setNotificationText.Invoke("WARNING", _currWave + 1);
             StartCoroutine(EnableWaveGOs(_nextPooledGO_ID, _spawnWaves[_currWave].spawnAmount));
+            if (_currWave + 1 == _numOfWaves) { LevelManager.Instance.SetOnLastWave(true); }
+
             yield return new WaitForSeconds(_spawnWaves[_currWave].length);
-            
-            if (_currWave < _numOfWaves) {
-                if (_numOfRemainingGOsInPool < _maxSpawnsPerWave)
-                { _nextPooledGO_ID = 0; }
-                else { _nextPooledGO_ID += _spawnWaves[_currWave].spawnAmount; }
-                _currWave += 1;
-                StartCoroutine(StartWaves());
-            }
-            else if (_currWave + 1 == _numOfWaves) { LevelManager.Instance.SetOnLastWave(true); }
+            if (_numOfRemainingGOsInPool < _maxSpawnsPerWave) { _nextPooledGO_ID = 0; }
+            else { _nextPooledGO_ID += _spawnWaves[_currWave].spawnAmount; }
+
+            _currWave += 1;
+            StartCoroutine(StartWaves());
         }
         else { Debug.Log("SpawnManager:StartWaves() _numWaves <= 0!"); }
     }
@@ -146,7 +144,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     }
 
     private void UpdateUI(int numOfEnemies, float timeRemaining) {
-        enemyCountChanged.Invoke(numOfEnemies);
         timeRemainingChanged.Invoke(timeRemaining);
     }
 

@@ -17,8 +17,7 @@ public class DamageZone : MonoBehaviour
         _transformsInCollider = new Transform[20];
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
+    private void OnTriggerEnter(Collider other) {
         if (_doDamagePhase && other.CompareTag("HitCollider")) {
             Transform parentTransform = other.transform.parent;
 
@@ -32,8 +31,7 @@ public class DamageZone : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
+    private void OnTriggerExit(Collider other) {
         if (other.CompareTag("HitCollider")) {
             if (_transformsInCollider != null && _transformsInCollider[_numOfAiInCollider] != null) {
                 _transformsInCollider[_numOfAiInCollider - 1] = null;
@@ -42,8 +40,7 @@ public class DamageZone : MonoBehaviour
         }
     }
 
-    public void DoDamage()
-    {
+    public void DoDamage() {
         _doDamagePhase = true;
 
         foreach (Transform tran in _transformsInCollider) {

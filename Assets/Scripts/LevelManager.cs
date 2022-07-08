@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoSingleton<LevelManager>
-{
+public class LevelManager : MonoSingleton<LevelManager> {
     [SerializeField] private bool _levelCompleted;
     [SerializeField] private bool _onLastWave;
     [Space]
@@ -19,21 +18,18 @@ public class LevelManager : MonoSingleton<LevelManager>
     public int GetEnemiesAlive() { return _enemiesAlive; }
     public int GetEnemiesKilled() { return _enemiesKilled; }
 
-    
     private void Start() { _levelCompleted = false; _onLastWave = false; }
 
-    public void AddEnemiesAlive(int numEnemiesToAdd) { _enemiesAlive += numEnemiesToAdd; }
-
+    public void AddEnemiesAlive(int numEnemiesToAdd) { _enemiesAlive += numEnemiesToAdd; UpdateUI();}
+    public void DeductEnemiesAlive(int numEnemiesToSubtract) { _enemiesAlive -= numEnemiesToSubtract; UpdateUI(); }
     public void AddEnemiesKilled(int numEnemiesKilled) {
         _enemiesKilled += numEnemiesKilled; 
-        UpdateEnemiesAlive(-numEnemiesKilled);
+        DeductEnemiesAlive(numEnemiesKilled);
         if (_onLastWave && _enemiesAlive <= 0) {
             _levelCompleted = true;
             UIManager.Instance.WinConditionMet();
         }
     }
-    
-    private void UpdateEnemiesAlive(int numModifier) { _enemiesAlive += numModifier; UpdateUI(); }
     
     private void UpdateUI() { UIManager.Instance.UpdateEnemyCount(_enemiesAlive); }
 }

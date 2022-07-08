@@ -259,18 +259,20 @@ public class RobotAI : MonoBehaviour
     }
 
     private void RunToCover() {
-        switch (_coverStatus) {
-            case CoverStatus.None:  //Already running
-                //Move to nearest cover
-                SetCoverStatus(CoverStatus.RunningTo);
-                break;
-            case CoverStatus.RunningTo: //Already running to cover
-                //Do nothing, in progress
-                break;
-            case CoverStatus.AtCover: //Already at cover
-                //Reset coroutine WaitToRun
-                WaitToRun();
-                break;
+        if (isActiveAndEnabled) {
+            switch (_coverStatus) {
+                case CoverStatus.None:  //Already running
+                    //Move to nearest cover
+                    SetCoverStatus(CoverStatus.RunningTo);
+                    break;
+                case CoverStatus.RunningTo: //Already running to cover
+                    //Do nothing, in progress
+                    break;
+                case CoverStatus.AtCover: //Already at cover
+                    //Reset coroutine WaitToRun
+                    WaitToRun();
+                    break;
+            }
         }
     }
     
@@ -299,7 +301,7 @@ public class RobotAI : MonoBehaviour
     public void ReachedEnd() { ResetValues(); }
 
     public void ResetValues() {
-        // _navMeshAgent.isStopped = true;
+        _isDying = false;
         _aiHealth = _defaultHealth;
         _coverStatus = CoverStatus.None;
         _currDestination = _waypointEndPosition;
@@ -316,8 +318,7 @@ public class RobotAI : MonoBehaviour
 
     public bool TakeDamage(float damageAmount) {
         _aiHealth -= damageAmount;
-        if (_aiHealth <= 0 && !_isDying) {
-            LevelManager.Instance.AddEnemiesKilled(1);
+        if (_aiHealth <= 0 && !_isDying && isActiveAndEnabled) {
             OnDeath();
             return true;
         }
@@ -326,20 +327,30 @@ public class RobotAI : MonoBehaviour
     }
 
     public void DetectNearMiss() { RunToCover(); }
-    
+
     private void OnDeath() {
+        _isDying = true;
+        LevelManager.Instance.AddEnemiesKilled(1);
         _animator.SetTrigger("Death");
         _audioSource.clip = _deathAudioClip;
         _audioSource.Play();
         _navMeshAgent.isStopped = true;
-        if (!_isDying && this.isActiveAndEnabled == true) { StartCoroutine(waitForDeathAnimation()); }
+        StartCoroutine(waitForDeathAnimation());
     }
 
     public bool IsDying() { return _isDying; }
     
     IEnumerator waitForDeathAnimation() {
         _isDying = true;
+        CheckWinCondition();
         yield return new WaitForSeconds(3.3f);
         ResetValues(); 
+    }
+
+    private void CheckWinCondition() {
+        if (LevelManager.Instance.GetOnLastWave() && LevelManager.Instance.GetEnemiesAlive() == 0) {
+            LevelManager.Instance.SetLevelCompleted(true);
+            UIManager.Instance.WinConditionMet();
+        }
     }
 }
