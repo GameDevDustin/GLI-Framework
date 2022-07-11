@@ -27,10 +27,7 @@ public class Player : MonoBehaviour
         if (Mouse.current.leftButton.wasPressedThisFrame && WeaponIsReadyToFire())
             { FireWeapon(); }
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            Application.Quit();
-        }
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) { Application.Quit(); }
     }
 
     private void FireWeapon() {
