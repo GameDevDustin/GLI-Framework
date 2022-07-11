@@ -26,6 +26,11 @@ public class Player : MonoBehaviour
     private void CheckPlayerInput() {
         if (Mouse.current.leftButton.wasPressedThisFrame && WeaponIsReadyToFire())
             { FireWeapon(); }
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            Application.Quit();
+        }
     }
 
     private void FireWeapon() {
